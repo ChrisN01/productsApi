@@ -30,11 +30,7 @@ trait ExceptionTrait
             return $this->authenticationResponse($e);
         }
 
-        // Generic response for unhandled exceptions.
-        return response()->json([
-            'error' => 'Server error',
-            'message' => $e->getMessage()
-        ], JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
+       return parent::render($request, $e);
     }
 
 
