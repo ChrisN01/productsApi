@@ -16,6 +16,7 @@ class ProductCollection extends ResourceCollection
     {
         return $this->collection->transform(function($product) {
             return [
+                'id'=>$product->id,
                 'name' => $product->name,
                 'totalPrice' => round((1 - ($product->discount / 100)) * $product->price, 2),
                 'rating' => $product->reviews->count() > 0 ? round($product->reviews->sum('star') / $product->reviews->count(), 2) : 'No rating yet!',

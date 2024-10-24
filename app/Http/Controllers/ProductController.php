@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Services\ProductService;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Http\Resources\Product\ProductResource;
@@ -15,10 +16,13 @@ use Auth;
 class ProductController extends Controller
 {
 
+    private $productService;
 
-    public function __construct()
+    public function __construct(ProductService $productService)
     {
         $this->middleware('auth:api')->except('index', 'show');
+        $this->middleware('product.owner')->only(['update', 'destroy']);
+        $this->productService = $productService;
     }
 
     /**
@@ -49,14 +53,10 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $request)
     {
-        $product = new Product;
-        $product->name = $request->name;
-        $product->detail = $request->detail;
-        $product->price = $request->price;
-        $product->stock = $request->stock;
-        $product->discount = $request->discount;
-        $product->save();
+        $data = $request->validated();
+        $data['user_id'] = Auth::id(); //Assign the authenticated user ID.
 
+        $product = $this->productService->createProduct($data);
         return response([
             'data'=> new ProductResource($product)
 
@@ -92,13 +92,12 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Product $product)
+    public function update(UpdateProductRequest $request, Product $product)
     {
-        $this->productUserCheck($product);
+        $updatedProduct = $this->productService->updateProduct($product, $request->validated());
 
-        $product->update($request->all());
         return response([
-            'data'=> new ProductResource($product)
+            'data'=> new ProductResource($updatedProduct)
 
         ],Response::HTTP_CREATED);
     }
@@ -111,19 +110,8 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        $this->productUserCheck($product);
-
-        $product->delete();
-
+        $this->productService->deleteProduct($product);
         return response(null,Response::HTTP_NO_CONTENT);
 
-    }
-
-    public function productUserCheck($product)
-    {
-        if(Auth::id() !== $product->user_id)
-        {
-            throw new ProductNotBelongsToUser;
-        }
     }
 }
