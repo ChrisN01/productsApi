@@ -19,6 +19,9 @@ class ReviewController extends Controller
     public function __construct(ReviewService $reviewService)
     {
         $this->reviewService=$reviewService;
+
+        $this->middleware('auth:api');
+        $this->middleware('product.owner')->only(['update', 'destroy']);
     }
 
     /**
@@ -62,8 +65,13 @@ class ReviewController extends Controller
      * @param  \App\Models\Review  $review
      * @return \Illuminate\Http\Response
      */
-    public function show(Review $review)
+    public function show(Product $product,Review $review)
     {
+        if ($review->product_id !== $product->id) {
+
+            return response(['error' => 'Review does not belong to this product.'], Response::HTTP_NOT_FOUND);
+        }
+
         return new ReviewResource($review);
     }
 
