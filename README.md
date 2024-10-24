@@ -52,6 +52,7 @@
 ```
 
 **Database seeding**
+
 Fill the database with seed data with relationships which includes users, products,reviews. This can help you to quickly start testing the api
 
 ```bash
@@ -60,12 +61,12 @@ Fill the database with seed data with relationships which includes users, produc
 
 **Passport Configuration**
 ```bash
-    php artisan passport:install
+ php artisan passport:install
 ```
 
 # Testing API
 ```bash
-    php artisan serve
+ php artisan serve
 ```
 
 The api can now be accessed at
