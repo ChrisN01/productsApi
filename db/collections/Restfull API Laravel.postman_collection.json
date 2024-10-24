@@ -491,7 +491,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"grant_type\":\"password\",\r\n    \"client_id\":\"9d5146da-7cd1-43cd-98ea-4aec34039b4b\",\r\n    \"client_secret\":\"FsCDKEWOBP3f4E0QlmvUIAYAdHuSkNxysvdCYxSZ\",\r\n    \"username\":\"jarrell.kihn@example.net\",\r\n    \"password\":\"secret\"\r\n}",
+							"raw": "{\r\n    \"grant_type\":\"password\",\r\n    \"client_id\":\"{{client_id}}\",\r\n    \"client_secret\":\"{{client_secret}}\",\r\n    \"username\":\"{{username}}\",\r\n    \"password\":\"{{password}}\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -520,6 +520,9 @@
 			"item": [
 				{
 					"name": "Get login",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"method": "GET",
 						"header": [
@@ -534,6 +537,15 @@
 								"type": "text"
 							}
 						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "http://localhost:8000/api/user",
 							"protocol": "http",
