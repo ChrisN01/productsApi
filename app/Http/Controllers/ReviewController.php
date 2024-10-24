@@ -7,11 +7,20 @@ use App\Models\Product;
 use App\Http\Requests\StoreReviewRequest;
 use App\Http\Requests\UpdateReviewRequest;
 use App\Http\Resources\ReviewResource;
+use App\Services\ReviewService;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 
 class ReviewController extends Controller
 {
+
+    protected $reviewService;
+
+    public function __construct(ReviewService $reviewService)
+    {
+        $this->reviewService=$reviewService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -40,14 +49,11 @@ class ReviewController extends Controller
      */
     public function store(StoreReviewRequest $request, Product $product)
     {
-       $review = new Review($request->all());
 
-       $product->reviews()->save($review);
+       $review = $this->reviewService->createReview($product, $request->validated());
 
-       return response([
-        
-        'data'=> new ReviewResource($review)
-       ], Response::HTTP_CREATED);
+       return response(new ReviewResource($review), Response::HTTP_CREATED);
+
     }
 
     /**
@@ -58,7 +64,7 @@ class ReviewController extends Controller
      */
     public function show(Review $review)
     {
-        //
+        return new ReviewResource($review);
     }
 
     /**
@@ -79,14 +85,15 @@ class ReviewController extends Controller
      * @param  \App\Models\Review  $review
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request,Product $product, Review $review)
+    public function update(UpdateReviewRequest $request,Product $product, Review $review)
     {
-        $review->update($request->all());
+        $updatedReview= $this->reviewService->updateReview($review, $request->validated());
 
-        return response([
+        /*return response([
         
-            'data'=> new ReviewResource($review)
-        ], Response::HTTP_CREATED);
+            'data'=> new ReviewResource($updatedReview)
+        ], Response::HTTP_CREATED);*/
+        return response(new ReviewResource($updatedReview), Response::HTTP_OK);
 
     }
 
@@ -99,7 +106,7 @@ class ReviewController extends Controller
     public function destroy(Product $product, Review $review)
     {
 
-        $review->delete();
+        $this->reviewService->deleteReview($review);
 
         return response(null,Response::HTTP_NO_CONTENT);
     }
