@@ -16,49 +16,41 @@
 
 ## Installation
 
-```markdown
 **Clone the repository**
 
 ```bash
  git clone https://github.com/ChrisN01/productsApi.git
 
-```markdown
 **Switch to the repository folder**
 
 ```bash
  cd productsApi
 
-```markdown
 **Install all the dependencies**
 
 ```bash
  composer install
 
-```markdown
 **Copy the example env file and make the required configuration changes in the .env file**
 
 ```bash
  cp .env.example .env
 
-```markdown
 **Generate the application security Key**
 
 ```bash
  php artisan key:generate
 
-```markdown
 **Run tha database migrations**
 ```bash
  php artisan migrate
 
-```markdown
 **Database seeding**
 Fill the database with seed data with relationships which includes users, products,reviews. This can help you to quickly start testing the api
 
 ```bash
  php artisan db:seed
 
-```markdown
 **Passport Configuration**
 ```bash
     php artisan passport:install
